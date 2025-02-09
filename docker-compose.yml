@@ -15,28 +15,26 @@ services:
     platform: linux/arm64
     container_name: sqlserver
     environment:
-      SA_PASSWORD: "YourPassword123"
+      SA_PASSWORD: "P@ssw0rd123!"
       ACCEPT_EULA: "Y"
       MSSQL_PID: "Developer"
     ports:
       - "1433:1433"
     volumes:
-      - sqlserver_data:/var/opt/mssql
+      - ./sqlserver_data:/var/opt/mssql
 
-  pentaho:
-    build:
-      context: .
-      dockerfile: Dockerfile
+  webspoon:
+    image: hiromuhota/webspoon:latest
+    container_name: webspoon
     platform: linux/amd64
-    container_name: pentaho
+    ports:
+      - "8080:8080"
     environment:
-      DISPLAY: $DISPLAY
+      - PDI_VERSION=9.3
+      - TZ=UTC
     volumes:
-      - ./pdi-files:/opt/pdi-cache
-      - /tmp/.X11-unix:/tmp/.X11-unix
-    depends_on:
-      - mongodb
-      - sqlserver
+      - ./pdi-files:/home/pentaho/.pentaho
+      - ./pdi-jobs:/var/lib/pdi-jobs
 
 volumes:
   sqlserver_data:
